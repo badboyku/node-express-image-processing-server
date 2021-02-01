@@ -1,0 +1,2 @@
+const gm = require('gm');
+
