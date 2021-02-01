@@ -1,13 +1,15 @@
 const { Router } = require('express');
 const multer = require('multer');
 
+const router = Router();
+
 const filename = (request, file, callback) => {
   callback(null, file.originalname);
 };
 
 const storage = multer.diskStorage({
-  'destination': 'api/uploads',
-  'filename': filename,
+  destination: 'api/uploads',
+  filename,
 });
 
 const fileFilter = (request, file, callback) => {
@@ -20,11 +22,11 @@ const fileFilter = (request, file, callback) => {
 };
 
 const upload = multer({
-  fileFilter: fileFilter,
-  storage: storage,
+  fileFilter,
+  storage,
 });
 
-const router = Router();
+
 
 router.post('/upload', upload.single('photo'), (request, response) => {
   if (request.fileValidationError) {
