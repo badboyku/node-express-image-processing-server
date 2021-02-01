@@ -18,6 +18,7 @@ function imageProcessor(filename) {
           pathToResizeWorker,
           { workerData: { source: sourcePath, destination: resizedDestination } },
         );
+
         const monochromeWorker = Worker(
           pathToMonochromeWorker,
           { workerData: { source: sourcePath, destination: monochromeDestination } },
@@ -25,13 +26,16 @@ function imageProcessor(filename) {
 
         resizeWorker.on('message', (message) => {
           resizeWorkerFinished = true;
+
           if (monochromeWorkerFinished) {
             resolve('resizeWorker finished processing');
           }
         });
+
         resizeWorker.on('error', (error) => {
           reject(new Error(error.message));
         });
+
         resizeWorker.on('exit', (code) => {
           if (code !== 0) {
             reject(new Error('Exited with status code ' + code));
@@ -40,13 +44,16 @@ function imageProcessor(filename) {
 
         monochromeWorker.on('message', (message) => {
           monochromeWorkerFinished = true;
+
           if (resizeWorkerFinished) {
             resolve('monochromeWorker finished processing');
           }
         });
+
         monochromeWorker.on('error', (error) => {
           reject(new Error(error.message));
         });
+
         monochromeWorker.on('exit', (code) => {
           if (code !== 0) {
             reject(new Error('Exited with status code ' + code));
